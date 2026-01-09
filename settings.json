@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Edit",
+      "Read",
+      "Write",
+      "Delete",
+      "Rename",
+      "CreateDirectory",
+      "ListDirectory",
+      "SlashCommand",
+      "Skill(ralph-loop)"
+    ],
+    "deny": []
+  },
+  "extendedThinking": {
+    "enabled": false
+  },
+  "bash": {
+    "allowed": ["*"]
+  },
+  "autoApprove": {
+    "bash": true,
+    "edit": true,
+    "write": true,
+    "delete": true
+  }
+}

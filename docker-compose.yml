@@ -1,0 +1,57 @@
+services:
+  localai:
+    image: localai/localai:latest-gpu-nvidia-cuda-12
+    container_name: localai
+    ports:
+      - '8081:8080'
+    volumes:
+      - ${HOME}/.localai/models:/models
+      - ${HOME}/.localai/backends:/backends
+    environment:
+      LOCALAI_CORS_ORIGINS: '*'
+      LOCALAI_LOG_LEVEL: info
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - sandbox-net
+
+  searchmcp:
+    image: mcp-server-search
+    container_name: searchmcp
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+    networks:
+      - sandbox-net
+
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ${ProjectDir}:/workspace
+    networks:
+      - sandbox-net
+    depends_on:
+      - localai
+    command: >
+      /bin/sh -c "
+      echo 'Waiting for AI Provider...';
+      until [ \"$(curl -s -o /dev/null -w '%{http_code}' http://localai:8080/models)\" = \"200\" ]; do
+          sleep 2
+      done
+      echo 'AI Provider ready';
+      exec /entrypoint.sh"
+
+networks:
+  sandbox-net:
+    driver: bridge

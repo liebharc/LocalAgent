@@ -1,0 +1,29 @@
+{
+	"$schema": "https://charm.land/crush.json",
+	"providers": {
+		"custom-deepseek": {
+			"type": "openai-compat",
+			"base_url": "http://localai:8080",
+			"api_key": "$DEEPSEEK_API_KEY",
+			"models": [
+				{
+					"id": "qwen3-coder-reap-25b-a3b-i1",
+					"name": "LocalAI Coder",
+					"cost_per_1m_in": 0.27,
+					"cost_per_1m_out": 1.1,
+					"cost_per_1m_in_cached": 0.07,
+					"cost_per_1m_out_cached": 1.1,
+					"context_window": 65536
+				}
+			]
+		}
+	},
+	"mcp": {
+		"websearch": {
+			"type": "sse",
+			"url": "http://searchmcp:8000/sse",
+			"timeout": 120,
+			"disabled": false
+		}
+	}
+}
